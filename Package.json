@@ -1,0 +1,60 @@
+{
+    "name": "file-to-active-path-forward-slash",
+    "version": "1.0.0",
+    "description": "VSCode extension to copy the relative path of a file to the active editor with forward slashes.",
+    "publisher": "linktros",
+    "engines": {
+        "vscode": "^1.50.0"
+    },
+    "activationEvents": [
+        "onCommand:extension.copyRelativePathForwardSlash"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "command": "extension.copyRelativePathForwardSlash",
+                "title": "Copy Relative Path with Forward Slashes to Active Editor",
+                "category": "File Tools"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "extension.copyRelativePathForwardSlash",
+                    "group": "navigation",
+                    "when": "resourceFilename != ''"
+                }
+            ]
+        }
+    },
+    "main": "./out/extension.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "node ./out/test/runTest.js",
+        "compile": "tsc -p ./"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Professional-ship-it/File-to-Active-Path-Forward-Slash.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/Professional-ship-it/File-to-Active-Path-Forward-Slash/issues"
+    },
+    "resolutions": {
+        "minimist": "^1.2.8",
+        "minimatch": "^3.1.2"
+    },
+    "homepage": "https://github.com/Professional-ship-it/File-to-Active-Path-Forward-Slash#readme",
+    "devDependencies": {
+        "@types/node": "^24.7.0",
+        "@vscode/test-electron": "^2.5.2",
+        "typescript": "^5.9.3",
+        "vscode": "^1.1.34"
+    }
+}
