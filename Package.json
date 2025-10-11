@@ -1,11 +1,14 @@
 {
     "name": "file-to-active-path-forward-slash",
+    "displayName": "File to Active Path Forward Slash",
     "version": "1.0.0",
     "description": "VSCode extension to copy the relative path of a file to the active editor with forward slashes.",
     "publisher": "linktros",
+    "icon": "images/icon.png",
     "engines": {
         "vscode": "^1.50.0"
     },
+    "main": "./out/extension.js",
     "activationEvents": [
         "onCommand:extension.copyRelativePathForwardSlash"
     ],
@@ -27,7 +30,6 @@
             ]
         }
     },
-    "main": "./out/extension.js",
     "directories": {
         "test": "test"
     },

@@ -3,8 +3,9 @@ import { copyRelativePath } from './commands/copyRelPath';
 
 export function activate(context: vscode.ExtensionContext) {
     const cmd = vscode.commands.registerCommand(
-    'extension.copyRelativePath', copyRelativePath
-);
+        'extension.copyRelativePathForwardSlash',
+        copyRelativePath
+    );
     context.subscriptions.push(cmd);
 }
 

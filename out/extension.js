@@ -38,7 +38,7 @@ exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const copyRelPath_1 = require("./commands/copyRelPath");
 function activate(context) {
-    const cmd = vscode.commands.registerCommand('extension.copyRelativePath', copyRelPath_1.copyRelativePath);
+    const cmd = vscode.commands.registerCommand('extension.copyRelativePathForwardSlash', copyRelPath_1.copyRelativePath);
     context.subscriptions.push(cmd);
 }
 function deactivate() { }
