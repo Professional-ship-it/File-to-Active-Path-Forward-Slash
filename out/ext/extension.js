@@ -36,10 +36,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
-const copyRelPath_1 = require("./commands/copyRelPath");
+const Logger_Commands_1 = require("./Logger_Commands");
+const copyRelPath_1 = require("../commands/copyRelPath");
 function activate(context) {
+    // register log command
+    (0, Logger_Commands_1.registerLoggerCommands)(context);
     const cmd = vscode.commands.registerCommand('extension.copyRelativePathForwardSlash', copyRelPath_1.copyActiveRelPath);
     context.subscriptions.push(cmd);
+    vscode.window.showInformationMessage('Extension "File to Active Path Forward Slash" activated successfully.');
 }
 function deactivate() { }
 //# sourceMappingURL=extension.js.map

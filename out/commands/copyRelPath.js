@@ -1,4 +1,5 @@
 "use strict";
+// Command Handler //
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -33,24 +34,78 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.copyRelativePath = copyRelativePath;
-// Command Handler //
+exports.copyActiveRelPath = copyActiveRelPath;
+// Version 0.0.2//
 const vscode = __importStar(require("vscode"));
-const relPath_1 = require("../relPath");
-async function copyRelativePath(fileUri) {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showErrorMessage('No active editor. Select a file first to copy its relative path.');
-        return;
-    }
-    const activeUri = editor.document.uri;
+const relPath_1 = require("../commands/relPath");
+const Logger_1 = require("../utils/Logger");
+/**
+ * Copies the relative path from the workspace root to the active file.
+ * Handles missing editors, missing workspaces, and copy errors gracefully.
+ */
+async function copyActiveRelPath() {
     try {
-        const relativePath = (0, relPath_1.computeRelativePath)(activeUri.fsPath, fileUri.fsPath);
-        await vscode.env.clipboard.writeText(relativePath);
-        vscode.window.showInformationMessage(`Copied relative path: ${relativePath}`);
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            Logger_1.Logger.error('No active editor found.', { context: 'copyActiveRelPath' });
+            return;
+        }
+        const activePath = editor.document.uri.fsPath;
+        if (!activePath) {
+            Logger_1.Logger.error('Active editor has no file path.', { context: 'copyActiveRelPath' });
+            // vscode.window.showErrorMessage('Could not determine active file path.');
+            return;
+        }
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+        if (!workspaceFolder) {
+            Logger_1.Logger.error('Active file is not within a workspace.', { context: 'copyActiveRelPath', activePath });
+            // vscode.window.showErrorMessage(
+            //     'This file is not part of any workspace. Relative path cannot be calculated.'
+            // );
+            return;
+        }
+        const workspacePath = workspaceFolder.uri.fsPath;
+        const rel = (0, relPath_1.getRelPath)(workspacePath, activePath);
+        // Type-Safety for fix for potential null return
+        if (!rel) {
+            Logger_1.Logger.error('Relative path calculation failed.', { workspacePath, activePath });
+            // vscode.window.showErrorMessage('Failed to calculate relative path. See console for details.');
+            return;
+        }
+        await vscode.env.clipboard.writeText(rel);
+        //Improved information logging with user context
+        Logger_1.Logger.info('Copied relative path to clipboard.', { relativePath: rel });
+        vscode.window.setStatusBarMessage(`📋 Copied: ${rel}`, 2500);
+        // vscode.window.showInformationMessage(`Copied relative path: ${rel}`);
     }
     catch (error) {
-        vscode.window.showErrorMessage(`Error copying relative path: ${error}`);
+        Logger_1.Logger.error('Unexpected error copying relative path.', { context: 'copyActiveRelPath', error });
+        // vscode.window.showErrorMessage('Unexpected error copying relative path. See console for details.');
+        // console.error('[copyActiveRelPath] Exception:', error);
     }
 }
+// Version: 0.0.1 //
+// import * as vscode from 'vscode';
+// import { computeRelativePath } from '../relPath';
+// export async function copyRelativePath(fileUri?: vscode.Uri) {
+//     const editor = vscode.window.activeTextEditor;
+//     const activeUri = editor?.document.uri;
+//     const targetUri = fileUri ?? activeUri;
+//     if (!targetUri) {
+//         vscode.window.showErrorMessage('No file selected and no active editor. Select a file or open an editor.');
+//         return;
+//     }
+//     const relativePath = computeRelativePath(activeUri?.fsPath ?? targetUri.fsPath, targetUri.fsPath);
+// }
+// Version: 0.0.0 //
+//     try {
+//     const activeUri = editor.document.uri; 
+//     try {
+//         const relativePath = computeRelativePath(activeUri.fsPath, fileUri.fsPath);
+//         await vscode.env.clipboard.writeText(relativePath);
+//         vscode.window.showInformationMessage(`Copied relative path: ${relativePath}`);
+//     } catch (error) {
+//         vscode.window.showErrorMessage(`Error copying relative path: ${error}`);
+//     }
+// }
 //# sourceMappingURL=copyRelPath.js.map
